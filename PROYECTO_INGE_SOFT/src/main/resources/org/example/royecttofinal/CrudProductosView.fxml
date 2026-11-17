@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane prefHeight="740.0" prefWidth="1160.0"
+            style="-fx-background-color: #F1F5F9; -fx-font-family: 'Segoe UI';"
+            xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.royecttofinal.ViewController.CrudProductosViewController">
+
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="15.0"
+              style="-fx-background-color: #0F172A; -fx-padding: 12 20 12 20;">
+            <VBox HBox.hgrow="ALWAYS">
+                <Label text="RestoSoftware — CRUD Catálogo de Productos (RF-11)"
+                       style="-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;"/>
+                <Label text="Administración de platos y control de disponibilidad KDS en tiempo real"
+                       style="-fx-text-fill: #94A3B8; -fx-font-size: 12px;"/>
+            </VBox>
+            <Button text="← Volver a Solicitar Pedido (Pantalla 1)" onAction="#onVolverAPedidosClick"
+                    style="-fx-background-color: #2563EB; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 14 8 14;"/>
+        </HBox>
+    </top>
+
+    <center>
+        <SplitPane dividerPositions="0.62" style="-fx-background-color: transparent;">
+            <padding>
+                <Insets top="12" right="12" bottom="12" left="12"/>
+            </padding>
+
+            <VBox spacing="10.0" style="-fx-background-color: white; -fx-padding: 14; -fx-background-radius: 6; -fx-border-color: #CBD5E1; -fx-border-radius: 6;">
+                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                    <Label text="Catálogo Maestro de Productos" style="-fx-font-weight: bold; -fx-font-size: 14px;" HBox.hgrow="ALWAYS"/>
+                    <TextField fx:id="txtBuscarProducto" promptText="Buscar por código, nombre o categoría..." prefWidth="260.0"/>
+                </HBox>
+
+                <TableView fx:id="tblProductos" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colId" text="Código" prefWidth="85.0"/>
+                        <TableColumn fx:id="colNombre" text="Nombre del Plato" prefWidth="240.0"/>
+                        <TableColumn fx:id="colCategoria" text="Categoría" prefWidth="120.0"/>
+                        <TableColumn fx:id="colPrecio" text="Precio Base" prefWidth="105.0"/>
+                        <TableColumn fx:id="colEstadoKDS" text="Estado KDS (RN-01)" prefWidth="135.0"/>
+                    </columns>
+                </TableView>
+
+                <Label fx:id="lblContadorProductos" text="Total productos: 0" style="-fx-text-fill: #475569; -fx-font-size: 12px;"/>
+            </VBox>
+
+            <VBox spacing="12.0" style="-fx-background-color: white; -fx-padding: 16; -fx-background-radius: 6; -fx-border-color: #CBD5E1; -fx-border-radius: 6;">
+                <Label text="Formulario de Producto (Crear / Editar)" style="-fx-font-weight: bold; -fx-font-size: 15px; -fx-text-fill: #0F172A;"/>
+                <Separator/>
+
+                <VBox spacing="4.0">
+                    <Label text="Código del Producto (idProducto):" style="-fx-font-weight: bold;"/>
+                    <TextField fx:id="txtIdProducto" promptText="Ej. P-21"/>
+                </VBox>
+
+                <VBox spacing="4.0">
+                    <Label text="Nombre del Plato (nombre):" style="-fx-font-weight: bold;"/>
+                    <TextField fx:id="txtNombreProducto" promptText="Ej. Trucha al Ajillo"/>
+                </VBox>
+
+                <VBox spacing="4.0">
+                    <Label text="Categoría (categoria):" style="-fx-font-weight: bold;"/>
+                    <ComboBox fx:id="cmbCategoria" editable="true" maxWidth="Infinity"/>
+                </VBox>
+
+                <VBox spacing="4.0">
+                    <Label text="Precio Base $ (precioBase):" style="-fx-font-weight: bold;"/>
+                    <TextField fx:id="txtPrecioBase" promptText="Ej. 16.50"/>
+                </VBox>
+
+                <CheckBox fx:id="chkDisponibleKDS" text="Disponible en Cocina KDS (disponibleKDS)" selected="true"
+                          style="-fx-font-weight: bold; -fx-text-fill: #16A34A;"/>
+
+                <Separator/>
+
+                <GridPane hgap="8.0" vgap="8.0">
+                    <columnConstraints>
+                        <ColumnConstraints percentWidth="50.0"/>
+                        <ColumnConstraints percentWidth="50.0"/>
+                    </columnConstraints>
+                    <Button text="+ Crear Producto" onAction="#onCrearClick" maxWidth="Infinity"
+                            style="-fx-background-color: #16A34A; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 9;"
+                            GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                    <Button fx:id="btnActualizar" text="Actualizar" onAction="#onActualizarClick" maxWidth="Infinity" disable="true"
+                            style="-fx-background-color: #2563EB; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 9;"
+                            GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                    <Button fx:id="btnEliminar" text="Eliminar" onAction="#onEliminarClick" maxWidth="Infinity" disable="true"
+                            style="-fx-background-color: #DC2626; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 9;"
+                            GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                    <Button text="Limpiar" onAction="#onLimpiarClick" maxWidth="Infinity"
+                            style="-fx-background-color: #E2E8F0; -fx-text-fill: #0F172A; -fx-font-weight: bold; -fx-padding: 9;"
+                            GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                </GridPane>
+
+                <Label fx:id="lblMensajeCrud" wrapText="true" style="-fx-font-weight: bold;"/>
+            </VBox>
+
+        </SplitPane>
+    </center>
+</BorderPane>

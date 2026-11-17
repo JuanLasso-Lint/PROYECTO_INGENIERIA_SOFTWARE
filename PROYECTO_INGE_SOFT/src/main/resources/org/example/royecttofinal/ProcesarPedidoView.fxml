@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane prefHeight="760.0" prefWidth="1200.0"
+            style="-fx-background-color: #F1F5F9; -fx-font-family: 'Segoe UI';"
+            xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.royecttofinal.ViewController.ProcesarPedidoViewController">
+
+    <top>
+        <VBox style="-fx-background-color: #0F172A; -fx-padding: 10 20 10 20;" spacing="6.0">
+            <HBox alignment="CENTER_LEFT" spacing="12.0">
+                <VBox HBox.hgrow="ALWAYS">
+                    <Label text="RestoSoftware — Pantalla 3: Proceso 'Procesar Pedido' (Bodega, Despacho y Entrega)"
+                           style="-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;"/>
+                    <Label text="Operaciones y Logística: Preparación, Empaque, Asignación de Repartidor, Entrega y Cierre (Pasos 8–15)"
+                           style="-fx-text-fill: #94A3B8; -fx-font-size: 12px;"/>
+                </VBox>
+                <Button text="← Pantalla 1: Solicitar Pedido" onAction="#onVolverSolicitarPedidoClick"
+                        style="-fx-background-color: #334155; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 7 12 7 12;"/>
+                <Button text="Pantalla 2: CRUD Productos" onAction="#onIrCrudProductosClick"
+                        style="-fx-background-color: #2563EB; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 7 12 7 12;"/>
+            </HBox>
+
+            <!-- INDICADORES OPERATIVOS EN TIEMPO REAL -->
+            <HBox spacing="14.0" alignment="CENTER_LEFT">
+                <Label fx:id="lblKpiTotales" text="Órdenes Confirmadas: 0"
+                       style="-fx-background-color: #1E293B; -fx-text-fill: #E2E8F0; -fx-padding: 4 10 4 10; -fx-background-radius: 4; -fx-font-weight: bold; -fx-font-size: 11.5px;"/>
+                <Label fx:id="lblKpiEnProceso" text="En Proceso Operativo: 0"
+                       style="-fx-background-color: #1E3A8A; -fx-text-fill: #93C5FD; -fx-padding: 4 10 4 10; -fx-background-radius: 4; -fx-font-weight: bold; -fx-font-size: 11.5px;"/>
+                <Label fx:id="lblKpiEntregados" text="Entregados y Cerrados: 0"
+                       style="-fx-background-color: #14532D; -fx-text-fill: #86EFAC; -fx-padding: 4 10 4 10; -fx-background-radius: 4; -fx-font-weight: bold; -fx-font-size: 11.5px;"/>
+                <Label fx:id="lblKpiIncidencias" text="Con Incidencia: 0"
+                       style="-fx-background-color: #7F1D1D; -fx-text-fill: #FCA5A5; -fx-padding: 4 10 4 10; -fx-background-radius: 4; -fx-font-weight: bold; -fx-font-size: 11.5px;"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <SplitPane dividerPositions="0.54" style="-fx-background-color: transparent;">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+
+            <!-- PANEL IZQUIERDO: BANDEJA DE PEDIDOS CONFIRMADOS Y DETALLE -->
+            <VBox spacing="8.0" style="-fx-padding: 4;">
+                <VBox spacing="8.0" VBox.vgrow="ALWAYS"
+                      style="-fx-background-color: white; -fx-padding: 12; -fx-background-radius: 6; -fx-border-color: #CBD5E1; -fx-border-radius: 6;">
+
+                    <HBox spacing="8.0" alignment="CENTER_LEFT">
+                        <Label text="Bandeja de Órdenes en Operaciones" style="-fx-font-weight: bold; -fx-font-size: 13.5px;" HBox.hgrow="ALWAYS"/>
+                        <TextField fx:id="txtBuscarOrden" promptText="Buscar ID, cliente o barrio..." prefWidth="200.0"/>
+                        <ComboBox fx:id="cmbFiltroEstado" prefWidth="185.0"/>
+                    </HBox>
+
+                    <TableView fx:id="tblPedidosOperativos" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="colOrdenId" text="Orden" prefWidth="88.0"/>
+                            <TableColumn fx:id="colCliente" text="Cliente / Barrio" prefWidth="165.0"/>
+                            <TableColumn fx:id="colTotal" text="Total" prefWidth="72.0"/>
+                            <TableColumn fx:id="colRecaudo" text="Condición Pago" prefWidth="115.0"/>
+                            <TableColumn fx:id="colRepartidor" text="Repartidor" prefWidth="120.0"/>
+                            <TableColumn fx:id="colEstado" text="Estado Operativo" prefWidth="165.0"/>
+                        </columns>
+                    </TableView>
+
+                    <Separator/>
+
+                    <!-- FICHA DETALLADA DEL PEDIDO SELECCIONADO -->
+                    <VBox spacing="5.0" style="-fx-background-color: #F8FAFC; -fx-padding: 10; -fx-background-radius: 5; -fx-border-color: #E2E8F0; -fx-border-radius: 5;">
+                        <Label fx:id="lblDetalleEncabezado" text="Seleccione un pedido de la tabla para gestionar su preparación y entrega."
+                               style="-fx-font-weight: bold; -fx-font-size: 12.5px; -fx-text-fill: #0F172A;"/>
+                        <Label fx:id="lblDetalleDireccion" text="Dirección: --- | Teléfono: --- | Compromiso: ---"
+                               style="-fx-font-size: 11.5px; -fx-text-fill: #334155;"/>
+                        <Label fx:id="lblDetalleItems" text="Platos: ---" wrapText="true"
+                               style="-fx-font-size: 11.5px; -fx-text-fill: #1E293B;"/>
+                    </VBox>
+                </VBox>
+            </VBox>
+
+            <!-- PANEL DERECHO: FLUJO POR ETAPAS (BODEGA -> EMPAQUE -> REPARTIDOR -> ENTREGA) + BITÁCORA -->
+            <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;">
+                <VBox spacing="8.0" style="-fx-padding: 4;">
+
+                    <!-- ETAPA 1 Y 2: BODEGA Y EMPAQUE -->
+                    <VBox spacing="6.0" style="-fx-background-color: white; -fx-padding: 11; -fx-background-radius: 6; -fx-border-color: #CBD5E1; -fx-border-radius: 6;">
+                        <Label text="1. Bodega y Cocina: Verificación, Preparación y Empaque (Pasos 8–10)"
+                               style="-fx-font-weight: bold; -fx-font-size: 12.5px; -fx-text-fill: #0F172A;"/>
+                        <TextField fx:id="txtObsBodega" promptText="Nota de verificación de existencias / sellado de empaque (opcional)..."/>
+                        <HBox spacing="8.0">
+                            <Button fx:id="btnIniciarPreparacion" text="1. Verificar Stock e Iniciar Preparación"
+                                    HBox.hgrow="ALWAYS" maxWidth="Infinity" onAction="#onIniciarPreparacionClick"
+                                    style="-fx-background-color: #2563EB; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 7;"/>
+                            <Button fx:id="btnEmpacarPedido" text="2. Marcar Empacado + Guía PDF"
+                                    HBox.hgrow="ALWAYS" maxWidth="Infinity" onAction="#onEmpacarPedidoClick"
+                                    style="-fx-background-color: #0D9488; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 7;"/>
+                        </HBox>
+                    </VBox>
+
+                    <!-- ETAPA 3: ASIGNACIÓN DE DESPACHO Y REPARTIDOR -->
+                    <VBox spacing="6.0" style="-fx-background-color: white; -fx-padding: 11; -fx-background-radius: 6; -fx-border-color: #CBD5E1; -fx-border-radius: 6;">
+                        <Label text="2. Logística y Transporte: Asignar Repartidor y Despachar (Pasos 11–12)"
+                               style="-fx-font-weight: bold; -fx-font-size: 12.5px; -fx-text-fill: #0F172A;"/>
+                        <HBox spacing="8.0" alignment="CENTER_LEFT">
+                            <ComboBox fx:id="cmbRepartidor" promptText="Seleccionar repartidor..." HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+                            <Button fx:id="btnDespacharPedido" text="3. Asignar y Despachar" onAction="#onDespacharPedidoClick"
+                                    style="-fx-background-color: #D97706; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 7 14 7 14;"/>
+                        </HBox>
+                    </VBox>
+
+                    <!-- ETAPA 4: ENTREGA EN SITIO Y CIERRE -->
+                    <VBox spacing="6.0" style="-fx-background-color: white; -fx-padding: 11; -fx-background-radius: 6; -fx-border-color: #CBD5E1; -fx-border-radius: 6;">
+                        <Label text="3. Entrega al Cliente y Cierre del Pedido (Pasos 13–15)"
+                               style="-fx-font-weight: bold; -fx-font-size: 12.5px; -fx-text-fill: #0F172A;"/>
+                        <CheckBox fx:id="chkRecaudoConfirmado" text="Confirmar recaudo de dinero Contra Entrega en sitio (A3)"
+                                  style="-fx-font-weight: bold; -fx-text-fill: #B45309;"/>
+                        <TextField fx:id="txtNotaRecepcionCliente" promptText="Confirmación de recepción del cliente (ej. Recibido conforme en portería)..."/>
+                        <HBox spacing="8.0">
+                            <Button fx:id="btnConfirmarEntrega" text="4. Confirmar Entrega y Cerrar Pedido"
+                                    HBox.hgrow="ALWAYS" maxWidth="Infinity" onAction="#onConfirmarEntregaClick"
+                                    style="-fx-background-color: #16A34A; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8;"/>
+                            <Button fx:id="btnVerGuiaPdf" text="Abrir Guía PDF" onAction="#onAbrirGuiaPdfClick"
+                                    style="-fx-background-color: #0F172A; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 12 8 12;"/>
+                        </HBox>
+                    </VBox>
+
+                    <!-- FLUJOS ALTERNOS A2 / A3 / INCIDENCIAS -->
+                    <VBox spacing="6.0" style="-fx-background-color: #FFFBEB; -fx-padding: 11; -fx-background-radius: 6; -fx-border-color: #FCD34D; -fx-border-radius: 6;">
+                        <Label text="Flujos Alternos y Gestión de Novedades (A2 Stock / A3 Pago / Ruta)"
+                               style="-fx-font-weight: bold; -fx-font-size: 12px; -fx-text-fill: #92400E;"/>
+                        <HBox spacing="8.0">
+                            <ComboBox fx:id="cmbTipoNovedad" prefWidth="200.0"/>
+                            <TextField fx:id="txtDetalleNovedad" promptText="Describa la incidencia o sustitución..." HBox.hgrow="ALWAYS"/>
+                            <Button fx:id="btnReportarNovedad" text="Registrar Novedad" onAction="#onReportarNovedadClick"
+                                    style="-fx-background-color: #DC2626; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 6 10 6 10;"/>
+                        </HBox>
+                    </VBox>
+
+                    <Label fx:id="lblMensajeOperacion" wrapText="true" style="-fx-font-weight: bold;"/>
+
+                    <!-- BITÁCORA DE TRAZABILIDAD -->
+                    <VBox spacing="5.0" style="-fx-background-color: white; -fx-padding: 10; -fx-background-radius: 6; -fx-border-color: #CBD5E1; -fx-border-radius: 6;">
+                        <Label text="Bitácora de Trazabilidad del Pedido Seleccionado" style="-fx-font-weight: bold; -fx-font-size: 12px;"/>
+                        <ListView fx:id="listBitacoraPedido" prefHeight="135.0"/>
+                    </VBox>
+
+                </VBox>
+            </ScrollPane>
+
+        </SplitPane>
+    </center>
+</BorderPane>

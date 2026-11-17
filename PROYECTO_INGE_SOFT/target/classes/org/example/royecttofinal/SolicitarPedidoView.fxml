@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane prefHeight="760.0" prefWidth="1180.0"
+            style="-fx-background-color: #F1F5F9; -fx-font-family: 'Segoe UI';"
+            xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.royecttofinal.ViewController.SolicitarPedidoViewController">
+
+    <top>
+        <VBox style="-fx-background-color: #0F172A; -fx-padding: 10 20 10 20;" spacing="4.0">
+            <HBox alignment="CENTER_LEFT" spacing="12.0">
+                <VBox HBox.hgrow="ALWAYS">
+                    <Label text="RestoSoftware — Pantalla 1: Transacción Solicitar Pedido (Comida)"
+                           style="-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;"/>
+                    <Label fx:id="lblInfoPedido" text="Orden: --- | Estado: Pendiente de Cobertura"
+                           style="-fx-text-fill: #94A3B8; -fx-font-size: 12px;"/>
+                </VBox>
+                <Label text="Rol Activo:" style="-fx-text-fill: #E2E8F0; -fx-font-weight: bold;"/>
+                <ComboBox fx:id="cmbRolActor" prefWidth="175.0" onAction="#onCambiarRolClick"/>
+                <Button text="Nuevo Pedido" onAction="#onNuevoPedidoClick"
+                        style="-fx-background-color: #334155; -fx-text-fill: white; -fx-font-weight: bold;"/>
+                <Button fx:id="btnCrudProductos" text="Pantalla 2: CRUD Productos" onAction="#onIrACrudProductosClick"
+                        style="-fx-background-color: #2563EB; -fx-text-fill: white; -fx-font-weight: bold;"/>
+                <Button fx:id="btnProcesarPedidos" text="Pantalla 3: Procesar y Entregar →" onAction="#onIrAProcesarPedidosClick"
+                        style="-fx-background-color: #0D9488; -fx-text-fill: white; -fx-font-weight: bold;"/>
+            </HBox>
+            <Label fx:id="lblPermisosRol" text="Permisos del Rol: ---"
+                   style="-fx-text-fill: #38BDF8; -fx-font-size: 11.5px; -fx-font-weight: bold;"/>
+        </VBox>
+    </top>
+
+    <center>
+        <SplitPane dividerPositions="0.56" style="-fx-background-color: transparent;">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+
+            <!-- PANEL IZQUIERDO: BUSCAR/CREAR CLIENTE + BUSCAR PRODUCTOS -->
+            <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;">
+                <VBox spacing="10.0" style="-fx-padding: 6;">
+
+                    <!-- PASO 1: BUSCAR O CREAR CLIENTE Y VALIDAR COBERTURA -->
+                    <VBox spacing="7.0" style="-fx-background-color: white; -fx-padding: 12; -fx-background-radius: 6; -fx-border-color: #CBD5E1; -fx-border-radius: 6;">
+                        <HBox alignment="CENTER_LEFT" spacing="8.0">
+                            <Label text="1. Buscar o Crear Cliente y Validar Cobertura (RF-01 / RN-02)"
+                                   style="-fx-font-weight: bold; -fx-font-size: 13px;" HBox.hgrow="ALWAYS"/>
+                            <Button text="Limpiar" onAction="#onLimpiarClienteClick"
+                                    style="-fx-background-color: #E2E8F0; -fx-font-size: 11px;"/>
+                        </HBox>
+
+                        <HBox spacing="8.0" alignment="CENTER_LEFT">
+                            <TextField fx:id="txtBuscarCliente" promptText="Buscar cliente por documento, nombre o barrio..." HBox.hgrow="ALWAYS"/>
+                            <ComboBox fx:id="cmbClientesDemo" promptText="Seleccionar cliente..." prefWidth="250.0"/>
+                        </HBox>
+
+                        <GridPane hgap="8.0" vgap="6.0">
+                            <columnConstraints>
+                                <ColumnConstraints percentWidth="32.0"/>
+                                <ColumnConstraints percentWidth="38.0"/>
+                                <ColumnConstraints percentWidth="30.0"/>
+                            </columnConstraints>
+                            <TextField fx:id="txtDocumentoCliente" promptText="Documento / Cédula *" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                            <TextField fx:id="txtNombreCliente" promptText="Nombre Completo *" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                            <TextField fx:id="txtTelefonoCliente" promptText="Teléfono *" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+
+                            <TextField fx:id="txtCalle" promptText="Dirección (ej. Cra 15 # 20-10) *" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="2"/>
+                            <TextField fx:id="txtBarrio" promptText="Barrio (Centro, Cabecera, Provenza...) *" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+                        </GridPane>
+
+                        <HBox alignment="CENTER_LEFT" spacing="8.0">
+                            <Button text="+ Guardar Nuevo Cliente" onAction="#onCrearClienteClick"
+                                    style="-fx-background-color: #0F172A; -fx-text-fill: white; -fx-font-weight: bold;"/>
+                            <Button text="Validar Cobertura (RN-02)" onAction="#onValidarCoberturaClick"
+                                    style="-fx-background-color: #2563EB; -fx-text-fill: white; -fx-font-weight: bold;"/>
+                        </HBox>
+
+                        <Label fx:id="lblEstadoCobertura" text="Seleccione un cliente o cree uno nuevo y valide su cobertura."
+                               wrapText="true" style="-fx-text-fill: #D97706; -fx-font-weight: bold;"/>
+                    </VBox>
+
+                    <!-- PASO 2 Y 3: BUSCAR PRODUCTO EN CATÁLOGO ACTIVO KDS -->
+                    <VBox fx:id="panelSeleccionProductos" disable="true" spacing="8.0"
+                          style="-fx-background-color: white; -fx-padding: 12; -fx-background-radius: 6; -fx-border-color: #CBD5E1; -fx-border-radius: 6;">
+                        <HBox alignment="CENTER_LEFT" spacing="8.0">
+                            <Label text="2. Buscar Plato en Menú Activo KDS (RF-02 a RF-05)" style="-fx-font-weight: bold; -fx-font-size: 13px;" HBox.hgrow="ALWAYS"/>
+                            <CheckBox fx:id="chkMostrarAgotados" text="Ver agotados KDS" onAction="#onToggleMostrarAgotados"/>
+                        </HBox>
+
+                        <TextField fx:id="txtBuscarPlato" promptText="Buscar plato por nombre, categoría o código..."/>
+                        <ListView fx:id="listProductos" prefHeight="120.0"/>
+
+                        <HBox alignment="CENTER_LEFT" spacing="8.0">
+                            <Button fx:id="btnSimularKDS" text="Simular Agotado / Activar KDS (RN-01)" onAction="#onSimularToggleKDS"
+                                    style="-fx-font-size: 11px; -fx-background-color: #E2E8F0;"/>
+                            <Label text="Cantidad:" style="-fx-font-weight: bold;"/>
+                            <Spinner fx:id="spnCantidad" prefWidth="75.0"/>
+                        </HBox>
+
+                        <Separator/>
+
+                        <Label text="Modificadores / Adicionales (Máx. 5 permitidos - RN-05):" style="-fx-font-weight: bold; -fx-font-size: 12px;"/>
+                        <FlowPane fx:id="paneModificadores" hgap="10.0" vgap="5.0"/>
+
+                        <Label text="Alérgenos y Restricciones Alimentarias Estandarizadas (RF-05):" style="-fx-font-weight: bold; -fx-font-size: 12px;"/>
+                        <FlowPane fx:id="paneAlergenos" hgap="10.0" vgap="4.0"/>
+
+                        <HBox spacing="8.0" alignment="CENTER_LEFT">
+                            <Label text="Restricción:"/>
+                            <ComboBox fx:id="cmbRestriccion" prefWidth="185.0"/>
+                            <TextField fx:id="txtObservaciones" promptText="Observación (opcional)" HBox.hgrow="ALWAYS"/>
+                        </HBox>
+
+                        <Label fx:id="lblErrorSeleccion" wrapText="true" style="-fx-text-fill: #DC2626; -fx-font-weight: bold;"/>
+
+                        <Button text="+ Agregar Plato al Pedido" maxWidth="Infinity" onAction="#onAgregarProductoClick"
+                                style="-fx-background-color: #0F172A; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8;"/>
+                    </VBox>
+
+                </VBox>
+            </ScrollPane>
+
+            <!-- PANEL DERECHO: CAMPOS AUTOMÁTICOS + CARRITO + LIQUIDACIÓN + CONFIRMAR -->
+            <VBox spacing="8.0" style="-fx-padding: 6;">
+                <VBox spacing="8.0" VBox.vgrow="ALWAYS"
+                      style="-fx-background-color: white; -fx-padding: 12; -fx-background-radius: 6; -fx-border-color: #CBD5E1; -fx-border-radius: 6;">
+
+                    <!-- CAMPOS AUTOMÁTICOS DE LA TRANSACCIÓN -->
+                    <GridPane hgap="10.0" vgap="4.0" style="-fx-background-color: #EFF6FF; -fx-padding: 8; -fx-background-radius: 4; -fx-border-color: #BFDBFE; -fx-border-radius: 4;">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="45.0"/>
+                            <ColumnConstraints percentWidth="55.0"/>
+                        </columnConstraints>
+                        <Label text="Fecha/Hora Registro (auto):" style="-fx-font-weight: bold; -fx-font-size: 11.5px; -fx-text-fill: #1E3A8A;" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                        <Label fx:id="lblFechaInicioAuto" text="---" style="-fx-font-size: 11.5px; -fx-text-fill: #1E40AF;" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+                        <Label text="Hora Compromiso Entrega (auto):" style="-fx-font-weight: bold; -fx-font-size: 11.5px; -fx-text-fill: #1E3A8A;" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                        <Label fx:id="lblFechaCompromisoAuto" text="Pendiente de validar zona" style="-fx-font-size: 11.5px; -fx-font-weight: bold; -fx-text-fill: #1D4ED8;" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                    </GridPane>
+
+                    <HBox alignment="CENTER_LEFT">
+                        <Label text="3. Detalle del Pedido en Curso" style="-fx-font-weight: bold; -fx-font-size: 13px;" HBox.hgrow="ALWAYS"/>
+                        <Button text="Quitar Seleccionado" onAction="#onQuitarItemClick"
+                                style="-fx-background-color: #FEE2E2; -fx-text-fill: #B91C1C; -fx-font-size: 11px;"/>
+                    </HBox>
+
+                    <ListView fx:id="listCarrito" VBox.vgrow="ALWAYS"/>
+
+                    <Separator/>
+
+                    <Label text="4. Cupón Promocional y Liquidación (RF-06 / RF-07)" style="-fx-font-weight: bold; -fx-font-size: 13px;"/>
+                    <HBox spacing="8.0">
+                        <TextField fx:id="txtCodigoCupon" promptText="Código (ej. PROMO10, VIP20, EXPIRADO)" HBox.hgrow="ALWAYS"/>
+                        <Button text="Aplicar Cupón (RN-03)" onAction="#onAplicarCuponClick"
+                                style="-fx-background-color: #475569; -fx-text-fill: white;"/>
+                    </HBox>
+                    <Label fx:id="lblErrorCupon" wrapText="true"/>
+
+                    <GridPane hgap="10.0" vgap="4.0" style="-fx-background-color: #F8FAFC; -fx-padding: 10; -fx-background-radius: 4;">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="60.0"/>
+                            <ColumnConstraints percentWidth="40.0" halignment="RIGHT"/>
+                        </columnConstraints>
+                        <Label text="Subtotal Ítems:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                        <Label fx:id="lblSubtotal" text="\$0.00" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+                        <Label text="Costo de Envío (Flete auto):" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                        <Label fx:id="lblFlete" text="\$0.00" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+                        <Label text="Descuento Aplicado:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                        <Label fx:id="lblDescuento" text="-\$0.00" style="-fx-text-fill: #16A34A;" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+                        <Label text="MONTO TOTAL A PAGAR:" style="-fx-font-weight: bold; -fx-font-size: 14px;" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                        <Label fx:id="lblTotal" text="\$0.00" style="-fx-font-weight: bold; -fx-font-size: 15px; -fx-text-fill: #1D4ED8;" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                    </GridPane>
+
+                    <Separator/>
+
+                    <Label text="5. Modalidad de Pago, Confirmación y Recibo PDF (RF-08 a RF-10)" style="-fx-font-weight: bold; -fx-font-size: 13px;"/>
+                    <ComboBox fx:id="cmbMetodoPago" maxWidth="Infinity"/>
+
+                    <HBox spacing="8.0">
+                        <Button fx:id="btnConfirmarPedido" text="CONFIRMAR PEDIDO Y GENERAR RECIBO PDF"
+                                HBox.hgrow="ALWAYS" maxWidth="Infinity" onAction="#onConfirmarPedidoClick"
+                                style="-fx-background-color: #16A34A; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 12.5px; -fx-padding: 10;"/>
+                        <Button fx:id="btnAbrirReciboPdf" text="Abrir Recibo PDF" disable="true"
+                                onAction="#onAbrirReciboPdfClick"
+                                style="-fx-background-color: #0F172A; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 14 10 14;"/>
+                    </HBox>
+                </VBox>
+            </VBox>
+
+        </SplitPane>
+    </center>
+</BorderPane>
